@@ -10,8 +10,7 @@ import { getUniqueKeyName } from '../shared/defaultKeyNames';
 import { invoke } from '@tauri-apps/api/core';
 import { Command } from '@tauri-apps/plugin-shell';
 import { basename } from '@tauri-apps/api/path';
-import { saveFileDialog, generateUniqueKeyFilename } from '../utils/fileUtils';
-import { openInBrowser } from '../utils/browserHelper';
+import { saveFileDialog } from '../utils/fileUtils';
 
 interface ApiKeyTableProps {
   keys: ApiKey[];
@@ -58,13 +57,6 @@ export const ApiKeyTable: React.FC<ApiKeyTableProps> = ({
     
     getFileName();
   }, [currentFileName]);
-
-  const copyToClipboard = useCallback((text: string, id: string) => {
-    navigator.clipboard.writeText(text).then(() => {
-      setCopiedId(id);
-      setTimeout(() => setCopiedId(null), 2000);
-    });
-  }, []);
 
   // Filter grid by provider - moved up before it's used
   const filterByProvider = useCallback((provider: string | null) => {
@@ -122,13 +114,6 @@ export const ApiKeyTable: React.FC<ApiKeyTableProps> = ({
       }
     }, 100);
   }, [keys, onKeysChange, activeFilter]);
-
-  const handleDeleteKey = useCallback(
-    (id: string) => {
-      onKeysChange(keys.filter((key) => key.id !== id));
-    },
-    [keys, onKeysChange]
-  );
 
   const handleValueChange = useCallback(
     async (id: string, field: keyof ApiKey, value: any) => {

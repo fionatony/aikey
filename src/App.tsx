@@ -6,7 +6,6 @@ import { ImportPreviewDialog } from './components/ImportPreviewDialog';
 import { useTheme } from './hooks/useTheme';
 import {
   openFileDialog,
-  openKeyFileDialog,
   readFile,
   detectFileFormat,
   parseEnvFile,
@@ -17,17 +16,17 @@ import {
   formatApiKeysForExport,
   fileFormats,
   loadFromDefaultKeyFile,
-  saveToDefaultKeyFile,
   loadFromKeyFile,
   saveToKeyFile,
   getDefaultKeyFilePath,
   generateUniqueKeyFilename,
 } from './utils/fileUtils';
-import { Palette, ContentCopy, FolderOpen, Save } from '@mui/icons-material';
 import { Command } from '@tauri-apps/plugin-shell';
 import { invoke } from '@tauri-apps/api/core';
-import { basename, appLocalDataDir, dirname, join } from '@tauri-apps/api/path';
+import { basename, appLocalDataDir, join } from '@tauri-apps/api/path';
 import { save, open } from '@tauri-apps/plugin-dialog';
+import FolderOpenIcon from '@mui/icons-material/FolderOpen';
+import SaveIcon from '@mui/icons-material/Save';
 
 export const App: React.FC = () => {
   const { mode, toggleTheme } = useTheme();
@@ -41,7 +40,6 @@ export const App: React.FC = () => {
   const [keys, setKeys] = useState<ApiKey[]>([]);
   const [currentKeyFile, setCurrentKeyFile] = useState<string | null>(null);
   const [currentKeyFilename, setCurrentKeyFilename] = useState<string>("default.key");
-  const [showGenerator, setShowGenerator] = useState(false);
   const [importPreview, setImportPreview] = useState<{
     keys: ApiKey[];
     conflicts: ApiKey[];
@@ -396,23 +394,6 @@ export const App: React.FC = () => {
     }
   }, [keys, currentKeyFile]);
 
-  const handleKeyGenerated = useCallback(async (newKey: ApiKey) => {
-    setKeys((prevKeys) => [...prevKeys, newKey]);
-    setShowGenerator(false);
-    
-    // Save changes immediately
-    try {
-      if (currentKeyFile) {
-        await saveToKeyFile([...keys, newKey], currentKeyFile);
-      } else {
-        await saveToDefaultKeyFile([...keys, newKey]);
-      }
-    } catch (error) {
-      console.error('Error saving after key generation:', error);
-      alert('Failed to save changes. Please try saving manually.');
-    }
-  }, [keys, currentKeyFile]);
-
   return (
     <ThemeProvider theme={theme}>
       <div className={`h-screen w-full ${mode === 'dark' ? 'bg-gray-900 text-white' : 'bg-gray-100'} p-4 transition-colors duration-200 overflow-hidden`}>
@@ -442,7 +423,7 @@ export const App: React.FC = () => {
                 className={`px-3 py-1 text-sm ${mode === 'dark' ? 'bg-indigo-600' : 'bg-indigo-500'} text-white rounded hover:opacity-90 flex items-center`}
                 title="Open a .key file"
               >
-                <FolderOpen className="h-3 w-3 mr-1" />
+                <FolderOpenIcon className="h-3 w-3 mr-1" />
                 Open
               </button>
               <button
@@ -450,7 +431,7 @@ export const App: React.FC = () => {
                 className={`px-3 py-1 text-sm ${mode === 'dark' ? 'bg-amber-600' : 'bg-amber-500'} text-white rounded hover:opacity-90 flex items-center`}
                 title="Save as a new .key file"
               >
-                <Save className="h-3 w-3 mr-1" />
+                <SaveIcon className="h-3 w-3 mr-1" />
                 Save As
               </button>
               <button

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { ApiKeyProvider } from '../types/apiKey';
-import { ClipboardMonitorStatus, GenerationSession } from '../types/apiKeyGeneration';
+import { ClipboardMonitorStatus } from '../types/apiKeyGeneration';
 import { API_KEY_PROVIDER_INFO } from '../shared/apiKeyProviders';
 import { ClipboardMonitor } from '../utils/clipboardMonitor';
 import { openInBrowser } from '../utils/browserHelper';
@@ -25,7 +25,6 @@ export const ApiKeyGenerator: React.FC<ApiKeyGeneratorProps> = ({
   const [detectedKey, setDetectedKey] = useState<string>('');
   const [currentStep, setCurrentStep] = useState<number>(0);
   const clipboardMonitor = useRef<ClipboardMonitor | null>(null);
-  const [generationSessionId, setGenerationSessionId] = useState<string>('');
   
   // Set default key name when provider changes
   useEffect(() => {
@@ -70,8 +69,7 @@ export const ApiKeyGenerator: React.FC<ApiKeyGeneratorProps> = ({
   const startMonitoring = useCallback(() => {
     if (clipboardMonitor.current) {
       // Generate a unique session ID
-      const sessionId = crypto.randomUUID();
-      setGenerationSessionId(sessionId);
+      // const sessionId = crypto.randomUUID(); // Remove unused variable
       
       // Clear any previously detected key
       setDetectedKey('');

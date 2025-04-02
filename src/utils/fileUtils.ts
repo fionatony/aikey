@@ -1,11 +1,6 @@
 import { invoke } from "@tauri-apps/api/core";
 import { open, save } from "@tauri-apps/plugin-dialog";
-import {
-  appConfigDir,
-  appLocalDataDir,
-  resolve,
-  join,
-} from "@tauri-apps/api/path";
+import { appConfigDir, appLocalDataDir, join } from "@tauri-apps/api/path";
 import { ApiKey } from "../types/apiKey";
 import { FILE_FORMATS } from "../shared/constants";
 import { extractKeysFromFile, extractAndCategorizeKeys } from "./keyExtractor";
