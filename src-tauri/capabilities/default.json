@@ -1,0 +1,41 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "main-capability",
+  "description": "Capability for the main window",
+  "windows": ["main"],
+  "permissions": [
+    "core:path:default",
+    "core:event:default",
+    "core:window:default",
+    "core:app:default",
+    "core:resources:default",
+    "core:menu:default",
+    "core:tray:default",
+    "core:window:allow-set-title",
+    "fs:default",
+    "dialog:default",
+    "opener:default",
+    {
+      "identifier": "shell:allow-execute",
+      "allow": [
+        {
+          "name": "run-setx",
+          "cmd": "cmd",
+          "args": ["/c", "setx"]
+        },
+        {
+          "name": "run-bash",
+          "cmd": "bash",
+          "args": ["-c", { "validator": "\\S+" }]
+        },
+        {
+          "name": "read-env",
+          "cmd": "cmd",
+          "args": ["/c", "printenv"]
+        }
+      ]
+    },
+    "shell:allow-open",
+    "shell:allow-kill"
+  ]
+}
